@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Pandhi's Fairytale Birthday | Royal Enchanted Storybook</title>
+  <meta name="description" content="A luxury Disney-style cinematic birthday storybook created with endless love for Pandhi. An interactive journey through 9 magical doors.">
+
+  <!-- Google Fonts: Luxury Script, Serif & Modern Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- GSAP 3 & ScrollTrigger for high-performance cinematic 60FPS animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/EasePack.min.js"></script>
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="is-locked">
+
+  <!-- ========================================================
+       GLOBAL SVG DEFINITIONS: Metallic Gradients & Glow Filters
+       ======================================================== -->
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+    <defs>
+      <linearGradient id="goldMetallicGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF8E7"/>
+        <stop offset="30%" stop-color="#FFD700"/>
+        <stop offset="60%" stop-color="#E8A87C"/>
+        <stop offset="100%" stop-color="#B8860B"/>
+      </linearGradient>
+      <linearGradient id="roseGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF0F5"/>
+        <stop offset="40%" stop-color="#F8BBD0"/>
+        <stop offset="70%" stop-color="#E8A87C"/>
+        <stop offset="100%" stop-color="#C2185B"/>
+      </linearGradient>
+      <linearGradient id="crystalBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E0F7FA"/>
+        <stop offset="45%" stop-color="#00E5FF"/>
+        <stop offset="75%" stop-color="#7C4DFF"/>
+        <stop offset="100%" stop-color="#FF4081"/>
+      </linearGradient>
+      <filter id="disneyGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ========================================================
+       BACKGROUND CANVAS LAYERS: Ambient Magic, Petals & Fireflies
+       ======================================================== -->
+  <canvas id="ambient-canvas" class="canvas-ambient" aria-hidden="true"></canvas>
+
+  <!-- ========================================================
+       FLOATING LUXURY MUSIC PLAYER (3 Selectable Soundtracks)
+       ======================================================== -->
+  <aside class="music-player-widget glass-pill" id="music-player-widget" aria-label="Soundtrack Player">
+    <div class="player-top-row">
+      <div class="audio-visualizer" id="audio-visualizer">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+      <button class="player-toggle-btn" id="player-toggle-btn" aria-label="Play or Pause Soundtrack">
+        <svg class="icon-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg class="icon-pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+      </button>
+      <div class="player-track-info">
+        <span class="track-title font-cinzel" id="track-title-display">Enchanted Piano</span>
+        <span class="track-tag font-montserrat">Romantic Soundtrack</span>
+      </div>
+    </div>
+    <div class="player-controls-row">
+      <div class="song-select-wrapper">
+        <select id="song-select" class="song-select font-montserrat" aria-label="Select Song">
+          <option value="piano" selected>🎹 1. Enchanted Piano</option>
+          <option value="waltz">🎻 2. Fairy Tale Waltz</option>
+          <option value="musicbox">🔔 3. Music Box Dreams</option>
+        </select>
+      </div>
+      <div class="volume-slider-wrapper">
+        <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.75" aria-label="Volume Slider">
+      </div>
+    </div>
+  </aside>
+
+  <!-- HTML5 Audio Element -->
+  <audio id="bg-music-player" loop preload="auto">
+    <source src="music/piano.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ========================================================
+       CHAPTER PROGRESS DOCK (Floating Bottom Navigation)
+       ======================================================== -->
+  <nav class="chapter-dock glass-pill" id="chapter-dock" aria-label="Storybook Chapters">
+    <button class="dock-nav-btn prev-btn" id="btn-prev-chapter" aria-label="Previous Chapter">
+      <span>◂ Prev Door</span>
+    </button>
+    <div class="dock-center-info">
+      <span class="dock-badge font-cinzel" id="dock-chapter-badge">Chapter 1 of 9</span>
+      <span class="dock-title font-playfair" id="dock-chapter-title">Royal Palace Welcome</span>
+    </div>
+    <button class="dock-nav-btn next-btn" id="btn-next-chapter" aria-label="Next Chapter">
+      <span>Next Door ▸</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================
+       MAGICAL DOOR PORTAL STAGE (Overlays before each chapter)
+       ======================================================== -->
+  <div class="door-portal-overlay" id="door-portal-overlay" aria-live="polite">
+    <!-- Light Rays & Glow Behind Doors -->
+    <div class="portal-god-rays" id="portal-god-rays"></div>
+    <div class="portal-light-aura" id="portal-light-aura"></div>
+    <div class="portal-particles-burst" id="portal-particles-burst"></div>
+
+    <!-- The 3D Door Stage -->
+    <div class="portal-door-stage" id="portal-door-stage">
+
+      <!-- Door Header Plaque -->
+      <div class="door-header-plaque glass-pill" id="door-header-plaque">
+        <span class="plaque-crown">👑</span>
+        <span class="plaque-chapter font-cinzel" id="door-plaque-chapter">CHAPTER 1</span>
+        <span class="plaque-divider">•</span>
+        <span class="plaque-name font-playfair" id="door-plaque-name">Royal Palace Entrance</span>
+      </div>
+
+      <!-- Door Assembly Frame -->
+      <div class="door-frame-wrapper" id="door-frame-wrapper">
+        <!-- Door Top Arch Lintel -->
+        <div class="door-arch-lintel" id="door-arch-lintel">
+          <svg viewBox="0 0 600 90" class="arch-svg">
+            <path d="M0,90 Q300,-15 600,90 L600,60 Q300,-45 0,60 Z" class="arch-filigree-fill"/>
+            <circle cx="300" cy="28" r="18" class="arch-gem" stroke-width="2"/>
+            <path d="M290 28 L297 20 L300 26 L303 20 L310 28 Z" fill="#ffd700"/>
+          </svg>
+        </div>
+
+        <!-- The Double 3D Doors -->
+        <div class="double-doors-3d" id="double-doors-3d">
+          <!-- Left Door Leaf -->
+          <div class="door-leaf door-leaf-left" id="door-leaf-left">
+            <div class="door-edge-bevel bevel-left"></div>
+            <div class="door-inner-art" id="door-art-left">
+              <div class="door-panel-carving top-carving">
+                <span class="door-filigree-corner tl"></span>
+                <span class="door-filigree-corner tr"></span>
+                <span class="door-emblem-center" id="door-emblem-left">⚜️</span>
+              </div>
+              <!-- Door Handle / Knocker -->
+              <div class="door-handle-unit handle-left" id="handle-left">
+                <div class="handle-knocker-ring" id="knocker-ring-left"></div>
+              </div>
+              <div class="door-panel-carving bottom-carving">
+                <span class="door-filigree-scroll">✦ 👑 ✦</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Door Leaf -->
+          <div class="door-leaf door-leaf-right" id="door-leaf-right">
+            <div class="door-edge-bevel bevel-right"></div>
+            <div class="door-inner-art" id="door-art-right">
+              <div class="door-panel-carving top-carving">
+                <span class="door-filigree-corner tl"></span>
+                <span class="door-filigree-corner tr"></span>
+                <span class="door-emblem-center" id="door-emblem-right">⚜️</span>
+              </div>
+              <!-- Door Handle / Knocker -->
+              <div class="door-handle-unit handle-right" id="handle-right">
+                <div class="handle-knocker-ring" id="knocker-ring-right"></div>
+              </div>
+              <div class="door-panel-carving bottom-carving">
+                <span class="door-filigree-scroll">✦ 👑 ✦</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seam Light Leak -->
+        <div class="door-seam-light" id="door-seam-light"></div>
+      </div>
+
+      <!-- Action Prompt: Tap Door to Enter -->
+      <div class="door-open-prompt" id="door-open-prompt">
+        <button class="btn-royal-luxury btn-open-portal" id="btn-open-portal-action">
+          <span class="btn-shimmer"></span>
+          <span class="door-prompt-icon" id="door-prompt-icon">✨</span>
+          <span class="door-prompt-text" id="door-prompt-text">Touch Door To Enter</span>
+          <span class="door-prompt-icon" id="door-prompt-icon-r">✨</span>
+        </button>
+        <p class="door-sub-hint font-montserrat" id="door-sub-hint">GPU-Accelerated 60 FPS Cinematic Transition</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       CHAPTER 0: MAGICAL LOADING SCREEN (Initial Entry)
+       ======================================================== -->
+  <section class="scene-fullscreen scene-loader active" id="scene-loader">
+    <div class="stars-backdrop" aria-hidden="true"></div>
+    <div class="ambient-glow aura-purple" aria-hidden="true"></div>
+    <div class="ambient-glow aura-rose" aria-hidden="true"></div>
+
+    <div class="loader-content">
+      <!-- Circular Glowing Royal Birthday Logo / Crest -->
+      <div class="royal-crest-wrapper">
+        <div class="crest-halo"></div>
+        <div class="crest-outer-ring">
+          <svg viewBox="0 0 200 200" class="crest-svg">
+            <circle cx="100" cy="100" r="92" class="ring-track"/>
+            <circle cx="100" cy="100" r="92" class="ring-pulse"/>
+            <path d="M 100 8 C 115 25, 125 25, 140 12 C 130 30, 138 42, 160 38" class="crest-filigree"/>
+            <path d="M 100 8 C 85 25, 75 25, 60 12 C 70 30, 62 42, 40 38" class="crest-filigree"/>
+            <path d="M 100 192 C 115 175, 125 175, 140 188 C 130 170, 138 158, 160 162" class="crest-filigree"/>
+            <path d="M 100 192 C 85 175, 75 175, 60 188 C 70 170, 62 158, 40 162" class="crest-filigree"/>
+          </svg>
+        </div>
+        <div class="crest-inner glass-card">
+          <svg class="crown-icon" viewBox="0 0 64 64" width="48" height="48">
+            <path d="M32 8 L40 24 L56 16 L48 46 L16 46 L8 16 L24 24 Z" fill="url(#goldGradient)" stroke="#ffd700" stroke-width="1.5"/>
+            <circle cx="32" cy="7" r="3.5" fill="#fff8e7" filter="drop-shadow(0 0 6px #ffd700)"/>
+            <circle cx="56" cy="15" r="2.5" fill="#f8bbd0"/>
+            <circle cx="8" cy="15" r="2.5" fill="#f8bbd0"/>
+            <rect x="18" y="48" width="28" height="5" rx="2.5" fill="url(#goldGradient)"/>
+            <defs>
+              <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fff8e7"/>
+                <stop offset="40%" stop-color="#ffd700"/>
+                <stop offset="70%" stop-color="#e8a87c"/>
+                <stop offset="100%" stop-color="#b8860b"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="crest-initials" id="crest-initials">PND</span>
+        </div>
+      </div>
+
+      <!-- Animated Fairytale Typography for Pandhi -->
+      <div class="loader-titles">
+        <p class="subtitle-royal font-cinzel">✦ A Fairytale Storybook For Pandhi ✦</p>
+        <h1 class="title-fairytale shimmer-text font-great-vibes" id="loader-title">Happy Birthday, Pandhi ❤️</h1>
+        <p class="loader-tagline font-montserrat">Nine magical doors await your discovery in this royal enchanted realm</p>
+      </div>
+
+      <!-- Luxury Glowing "Tap To Begin" Button -->
+      <div class="btn-begin-container">
+        <button class="btn-royal-luxury" id="btn-begin-journey" aria-label="Tap to enter magical celebration">
+          <span class="btn-shimmer"></span>
+          <span class="btn-border-glow"></span>
+          <span class="btn-icon-left">✨</span>
+          <span class="btn-text">Open Chapter 1</span>
+          <span class="btn-icon-right">✨</span>
+        </button>
+        <p class="btn-subtext">Best experienced with sound enabled</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       MAIN CHAPTER-BASED STORYBOOK STAGE
+       ======================================================== -->
+  <main class="fairytale-chapters-stage" id="fairytale-chapters-stage">
+
+    <!-- ========================================================
+         CHAPTER 1: ROYAL PALACE WELCOME (Gold + Rose Gold + Purple)
+         ======================================================== -->
+    <article class="chapter-scene active" id="chapter-1" data-chapter="1">
+      <div class="chapter-backdrop backdrop-royal" aria-hidden="true"></div>
+      <div class="floating-lantern lantern-1" aria-hidden="true"><div class="lantern-glow"></div></div>
+      <div class="floating-lantern lantern-2" aria-hidden="true"><div class="lantern-glow"></div></div>
+      <div class="floating-rose rose-1" aria-hidden="true">🌹</div>
+      <div class="floating-rose rose-2" aria-hidden="true">🌸</div>
+
+      <div class="container chapter-inner">
+        <div class="glass-card luxury-ornate-card welcome-card">
+          <span class="gold-corner tl"></span>
+          <span class="gold-corner tr"></span>
+          <span class="gold-corner bl"></span>
+          <span class="gold-corner br"></span>
+
+          <div class="card-header-badge">
+            <span class="badge-star">✦</span>
+            <span class="badge-text font-cinzel">Chapter I • Royal Palace Sanctuary</span>
+            <span class="badge-star">✦</span>
+          </div>
+
+          <h2 class="section-title cursive-greeting font-great-vibes" id="welcome-greeting">
+            Happy Birthday, My Dearest Pandhi
+          </h2>
+
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">♦</span>
+            <span class="line"></span>
+          </div>
+
+          <div class="welcome-letter-body font-montserrat">
+            <p class="lead-quote font-playfair" id="welcome-quote">
+              "In a universe of billions of souls, mine will forever dance only to the rhythm of yours."
+            </p>
+            <p class="letter-paragraph" id="welcome-message-p1">
+              Dearest Pandhi, today is the wondrous day the universe was blessed with your radiant light, your contagious laughter, and your pure golden heart.
+            </p>
+            <p class="letter-paragraph" id="welcome-message-p2">
+              Behind each of these nine magical doors lies a chapter of our fairytale—whispered memories, eternal promises, and the deepest love I hold for you.
+            </p>
+          </div>
+
+          <div class="welcome-card-footer">
+            <div class="signature-block">
+              <span class="sig-prefix font-cinzel">With All My Heart,</span>
+              <span class="sig-name font-great-vibes" id="welcome-signature">Forever Yours ❤️</span>
+            </div>
+            <button class="btn-royal-luxury btn-advance-chapter" data-next="2" aria-label="Advance to Chapter 2">
+              <span class="btn-shimmer"></span>
+              <span>Approach Crystal Door ▸</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 2: CRYSTAL MEMORY GALLERY (Sapphire + Purple + Pink)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-2" data-chapter="2">
+      <div class="chapter-backdrop backdrop-crystal" aria-hidden="true"></div>
+      <div class="container chapter-inner">
+        <div class="section-heading text-center">
+          <span class="heading-badge font-cinzel">Chapter II • Crystal Palace Gallery</span>
+          <h2 class="heading-title font-playfair">Frames of Our Fairytale</h2>
+          <p class="heading-subtitle font-montserrat">Each picture is a treasured memory, glistening like diamonds in the crystal palace.</p>
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">💎</span>
+            <span class="line"></span>
+          </div>
+        </div>
+
+        <div class="polaroid-grid" id="polaroid-grid">
+          <!-- Rendered dynamically from CONFIG -->
+        </div>
+
+        <div class="chapter-advance-row text-center">
+          <button class="btn-royal-luxury btn-advance-chapter" data-next="3">
+            <span class="btn-shimmer"></span>
+            <span>Approach Rose Garden Gate ▸</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 3: ROSE GARDEN GATE TIMELINE (Emerald + Rose + Ruby)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-3" data-chapter="3">
+      <div class="chapter-backdrop backdrop-rose-garden" aria-hidden="true"></div>
+      <div class="container chapter-inner">
+        <div class="section-heading text-center">
+          <span class="heading-badge font-cinzel">Chapter III • The Rose Garden Gate</span>
+          <h2 class="heading-title font-playfair">The Constellation of Our Love</h2>
+          <p class="heading-subtitle font-montserrat">Blooming through every season, rooted in trust and eternal devotion.</p>
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">🌹</span>
+            <span class="line"></span>
+          </div>
+        </div>
+
+        <div class="timeline-wrapper">
+          <div class="timeline-vine" id="timeline-vine">
+            <div class="vine-glow-stem"></div>
+          </div>
+          <div class="timeline-items-list" id="timeline-items-list">
+            <!-- Timeline items rendered dynamically -->
+          </div>
+        </div>
+
+        <div class="chapter-advance-row text-center">
+          <button class="btn-royal-luxury btn-advance-chapter" data-next="4">
+            <span class="btn-shimmer"></span>
+            <span>Approach Lantern Memory Door ▸</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 4: LANTERN MEMORY DOOR (Night Garden + Warm Amber)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-4" data-chapter="4">
+      <div class="chapter-backdrop backdrop-lantern-night" aria-hidden="true"></div>
+      <div class="container chapter-inner">
+        <div class="section-heading text-center">
+          <span class="heading-badge font-cinzel">Chapter IV • The Lantern Night Garden</span>
+          <h2 class="heading-title font-playfair">Whispers In Starlight</h2>
+          <p class="heading-subtitle font-montserrat">Warm amber lanterns glowing under the moon, carrying our sweetest wishes.</p>
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">🏮</span>
+            <span class="line"></span>
+          </div>
+        </div>
+
+        <!-- Lantern Memory Cards Grid -->
+        <div class="lantern-memories-grid" id="lantern-memories-grid">
+          <!-- Populated with glowing lantern parchment cards -->
+        </div>
+
+        <div class="chapter-advance-row text-center">
+          <button class="btn-royal-luxury btn-advance-chapter" data-next="5">
+            <span class="btn-shimmer"></span>
+            <span>Approach Heart Lock Door ▸</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 5: HEART LOCK DOOR (Crimson + Rose Gold + Letters)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-5" data-chapter="5">
+      <div class="chapter-backdrop backdrop-heart-lock" aria-hidden="true"></div>
+      <div class="container chapter-inner">
+        <div class="section-heading text-center">
+          <span class="heading-badge font-cinzel">Chapter V • The Heart Lock Sanctuary</span>
+          <h2 class="heading-title font-playfair">Love Letters For Pandhi</h2>
+          <p class="heading-subtitle font-montserrat">Hanging on silk ribbons with royal wax seals. Click each note to unfold its handwritten secrets.</p>
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">💌</span>
+            <span class="line"></span>
+          </div>
+        </div>
+
+        <div class="love-notes-tree" id="love-notes-container">
+          <!-- Rendered dynamically with parchment unfold animation -->
+        </div>
+
+        <div class="chapter-advance-row text-center">
+          <button class="btn-royal-luxury btn-advance-chapter" data-next="6">
+            <span class="btn-shimmer"></span>
+            <span>Approach Royal Treasure Vault ▸</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 6: ROYAL TREASURE VAULT (Gold Vault + Gift Box)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-6" data-chapter="6">
+      <div class="chapter-backdrop backdrop-treasure-vault" aria-hidden="true"></div>
+      <div class="container chapter-inner">
+        <div class="section-heading text-center">
+          <span class="heading-badge font-cinzel">Chapter VI • The Royal Vault</span>
+          <h2 class="heading-title font-playfair">The Enchanted Gift Box</h2>
+          <p class="heading-subtitle font-montserrat">Sealed with royal silk and devotion. Click to open your birthday surprise!</p>
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">🎁</span>
+            <span class="line"></span>
+          </div>
+        </div>
+
+        <div class="gift-box-stage">
+          <!-- 3D Gift Box Geometry -->
+          <div class="gift-box-3d" id="gift-box-3d" role="button" tabindex="0" aria-label="Open Birthday Gift Box">
+            <div class="gift-lid" id="gift-lid">
+              <div class="lid-face lid-top">
+                <div class="ribbon-bow">
+                  <div class="bow-loop loop-left"></div>
+                  <div class="bow-loop loop-right"></div>
+                  <div class="bow-knot"></div>
+                </div>
+              </div>
+              <div class="lid-face lid-front"></div>
+            </div>
+            <div class="gift-base">
+              <div class="box-face box-front">
+                <div class="ribbon-vertical"></div>
+                <div class="gift-seal-stamp">👑</div>
+              </div>
+            </div>
+            <div class="gift-shadow"></div>
+          </div>
+
+          <button class="btn-royal-luxury gift-open-prompt-btn" id="btn-open-gift-action">
+            <span class="btn-shimmer"></span>
+            <span>🎁 Click To Open Your Gift</span>
+          </button>
+
+          <canvas id="gift-confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+          <div class="gift-revealed-letter glass-card" id="gift-revealed-letter" aria-hidden="true">
+            <div class="letter-filigree-top">✦ 👑 ✦</div>
+            <h3 class="letter-royal-heading font-great-vibes" id="gift-letter-title">A Golden Royal Decree For Pandhi</h3>
+            <p class="letter-royal-date font-cinzel" id="gift-letter-date">Awarded On Your Fairytale Birthday</p>
+            <div class="gold-divider"><span class="line"></span><span class="gem">♥</span><span class="line"></span></div>
+            <p class="letter-royal-content font-montserrat" id="gift-letter-message">
+              "Pandhi, you are hereby crowned the eternal queen of my heart, the keeper of all my sweetest dreams, and the most radiant soul in every kingdom. May this year shower you with boundless joy and everlasting love."
+            </p>
+            <div class="letter-royal-seal">
+              <span class="seal-icon">⚜️</span>
+              <span class="seal-text font-cinzel">Sealed With Eternal Love</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter-advance-row text-center">
+          <button class="btn-royal-luxury btn-advance-chapter" data-next="7">
+            <span class="btn-shimmer"></span>
+            <span>Approach Diamond Memory Heart Door ▸</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 7: DIAMOND MEMORY HEART (Emotional Climax)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-7" data-chapter="7">
+      <div class="chapter-backdrop backdrop-diamond" aria-hidden="true"></div>
+      <canvas id="memory-heart-canvas" class="memory-heart-canvas" aria-hidden="true"></canvas>
+
+      <div class="container chapter-inner memory-heart-inner">
+        <div class="section-heading text-center">
+          <span class="heading-badge font-cinzel">Chapter VII • The Diamond Realm</span>
+          <h2 class="heading-title font-playfair">The Beating Memory Heart</h2>
+          <p class="heading-subtitle font-montserrat">Watch all our memories fly through space to assemble into a glowing heart for Pandhi.</p>
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">💖</span>
+            <span class="line"></span>
+          </div>
+        </div>
+
+        <div class="heart-controls-bar text-center">
+          <button class="btn-royal-luxury btn-assemble-heart" id="btn-assemble-heart" aria-label="Assemble photos into a heart">
+            <span class="btn-shimmer"></span>
+            <span class="heart-icon">✨</span>
+            <span class="btn-text">Assemble Our Heart</span>
+            <span class="heart-icon">💖</span>
+          </button>
+          <button class="btn-secondary-glass btn-scatter-heart" id="btn-scatter-heart" aria-label="Scatter photos across screen">
+            <span>✨ Scatter Memories</span>
+          </button>
+        </div>
+
+        <div class="memory-heart-stage-wrapper">
+          <div class="memory-heart-stage" id="memory-heart-stage">
+            <div class="heart-silhouette-glow" id="heart-silhouette-glow"></div>
+            <div class="heart-thumbnails-container" id="heart-thumbnails-container">
+              <!-- Dynamically populated photo nodes -->
+            </div>
+          </div>
+        </div>
+
+        <div class="memory-heart-message-wrapper text-center" id="memory-heart-message-wrapper">
+          <h3 class="memory-heart-glowing-text font-great-vibes" id="memory-heart-glowing-text">
+            Every Memory With You Is Special ❤️
+          </h3>
+          <p class="memory-heart-subtext font-montserrat">
+            Thousands of moments, millions of smiles, but only one Pandhi.
+          </p>
+          <div class="chapter-advance-row text-center">
+            <button class="btn-royal-luxury btn-advance-chapter" data-next="8">
+              <span class="btn-shimmer"></span>
+              <span>Approach Celebration Cake Door ▸</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 8: CELEBRATION CAKE (Pink-White + Wax + Candles)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-8" data-chapter="8">
+      <div class="chapter-backdrop backdrop-cake" aria-hidden="true"></div>
+      <div class="container chapter-inner">
+        <div class="section-heading text-center">
+          <span class="heading-badge font-cinzel">Chapter VIII • The Birthday Wish</span>
+          <h2 class="heading-title font-playfair">Make A Wish, Pandhi!</h2>
+          <p class="heading-subtitle font-montserrat">Close your eyes, think of your deepest wish, and blow out the candles!</p>
+          <div class="gold-divider">
+            <span class="line"></span>
+            <span class="gem">🎂</span>
+            <span class="line"></span>
+          </div>
+        </div>
+
+        <div class="cake-stage-container">
+          <div class="royal-cake-wrapper" id="royal-cake-wrapper">
+            <div class="cake-candles-row" id="cake-candles-row">
+              <div class="candle candle-1"><div class="candle-wick"></div><div class="flame" id="flame-1"><div class="flame-halo"></div></div><div class="candle-smoke" id="smoke-1"></div><div class="candle-body"></div></div>
+              <div class="candle candle-2"><div class="candle-wick"></div><div class="flame" id="flame-2"><div class="flame-halo"></div></div><div class="candle-smoke" id="smoke-2"></div><div class="candle-body"></div></div>
+              <div class="candle candle-3"><div class="candle-wick"></div><div class="flame" id="flame-3"><div class="flame-halo"></div></div><div class="candle-smoke" id="smoke-3"></div><div class="candle-body"></div></div>
+              <div class="candle candle-4"><div class="candle-wick"></div><div class="flame" id="flame-4"><div class="flame-halo"></div></div><div class="candle-smoke" id="smoke-4"></div><div class="candle-body"></div></div>
+              <div class="candle candle-5"><div class="candle-wick"></div><div class="flame" id="flame-5"><div class="flame-halo"></div></div><div class="candle-smoke" id="smoke-5"></div><div class="candle-body"></div></div>
+            </div>
+
+            <div class="cake-tier tier-top">
+              <div class="tier-frosting-icing"><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span></div>
+              <div class="tier-gold-trim"></div>
+            </div>
+            <div class="cake-tier tier-middle">
+              <div class="tier-frosting-icing"><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span></div>
+              <div class="tier-roses-decor"><span class="piped-rose">🌸</span><span class="piped-rose">🌹</span><span class="piped-rose">🌸</span></div>
+              <div class="tier-gold-trim"></div>
+            </div>
+            <div class="cake-tier tier-bottom">
+              <div class="tier-frosting-icing"><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span><span class="icing-drip"></span></div>
+              <div class="tier-gold-trim"></div>
+            </div>
+            <div class="cake-stand">
+              <div class="stand-plate"></div>
+              <div class="stand-pillar"></div>
+              <div class="stand-base"></div>
+            </div>
+          </div>
+
+          <div class="cake-action-container">
+            <button class="btn-royal-luxury btn-blow-candles" id="btn-blow-candles" aria-label="Blow out the birthday candles">
+              <span class="btn-shimmer"></span>
+              <span class="blow-icon">💨</span>
+              <span class="btn-text">Make A Wish & Blow Out Candles</span>
+            </button>
+            <p class="wish-status-text font-montserrat" id="wish-status-text">
+              Click the button or touch the flames to blow them out!
+            </p>
+          </div>
+        </div>
+
+        <div class="chapter-advance-row text-center">
+          <button class="btn-royal-luxury btn-advance-chapter" data-next="9">
+            <span class="btn-shimmer"></span>
+            <span>Open Heaven Gate Finale ▸</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================
+         CHAPTER 9: HEAVEN GATE FINALE (Fireworks + Easter Egg)
+         ======================================================== -->
+    <article class="chapter-scene" id="chapter-9" data-chapter="9">
+      <div class="chapter-backdrop backdrop-heaven" aria-hidden="true"></div>
+      <canvas id="fireworks-canvas" class="fireworks-canvas" aria-hidden="true"></canvas>
+
+      <div class="container chapter-inner finale-content-wrapper">
+        <!-- Floating Photo Constellation forming Heart -->
+        <div class="heart-photo-constellation" id="heart-photo-constellation">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="finale-text-block text-center">
+          <!-- Hidden Easter Egg Star Trigger -->
+          <button class="easter-egg-star" id="easter-egg-star" title="A secret star for Pandhi" aria-label="Secret celestial star">✦</button>
+
+          <div class="finale-badge font-cinzel">✦ The Grand Heavenly Finale ✦</div>
+          <h2 class="finale-glowing-quote font-great-vibes" id="finale-quote">
+            You Make My World Beautiful
+          </h2>
+          <p class="finale-eternal-wish font-playfair" id="finale-wish">
+            Happy Birthday Forever ❤️
+          </p>
+          <p class="finale-subtext font-montserrat" id="finale-subtext">
+            Dearest Pandhi, may your life forever sparkle with the boundless love and pure happiness you give to the world.
+          </p>
+        </div>
+
+        <div class="finale-controls-row">
+          <button class="btn-royal-luxury btn-replay-fireworks" id="btn-more-fireworks">
+            <span class="btn-shimmer"></span>
+            <span>🎆 Launch More Fireworks</span>
+          </button>
+          <button class="btn-secondary-glass" id="btn-replay-journey">
+            <span>✨ Replay From Chapter 1</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ========================================================
+       HIDDEN EASTER EGG MODAL FOR PANDHI
+       ======================================================== -->
+  <div class="easter-egg-backdrop" id="easter-egg-backdrop" aria-hidden="true">
+    <div class="easter-egg-modal glass-card" id="easter-egg-modal">
+      <span class="gold-corner tl"></span>
+      <span class="gold-corner tr"></span>
+      <span class="gold-corner bl"></span>
+      <span class="gold-corner br"></span>
+      <div class="easter-egg-star-icon">✨ ✦ ✨</div>
+      <h3 class="easter-egg-title font-great-vibes">My Dearest Pandhi</h3>
+      <div class="gold-divider"><span class="line"></span><span class="gem">♥</span><span class="line"></span></div>
+      <p class="easter-egg-quote font-playfair">
+        "No matter how many birthdays pass, I'll always choose you. ❤️"
+      </p>
+      <p class="easter-egg-body font-montserrat">
+        Across every universe, through every passing storm, and in every chapter of this beautiful life, my heart is forever and only yours.
+      </p>
+      <button class="btn-royal-luxury btn-close-easter-egg" id="btn-close-easter-egg">
+        <span class="btn-shimmer"></span>
+        <span>Close With Endless Love ❤️</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       LIGHTBOX MODAL FOR MEMORY GALLERY & MEMORY HEART
+       ======================================================== -->
+  <div class="lightbox-modal" id="gallery-lightbox" aria-hidden="true" role="dialog" aria-label="Photo Preview">
+    <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+    <div class="lightbox-container glass-card">
+      <button class="lightbox-close" id="lightbox-close" aria-label="Close Preview">&times;</button>
+      <div class="lightbox-frame">
+        <img src="" alt="Memory Preview" id="lightbox-img" class="lightbox-img">
+        <div class="lightbox-details">
+          <h3 class="lightbox-title font-playfair" id="lightbox-title"></h3>
+          <p class="lightbox-desc font-montserrat" id="lightbox-desc"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
