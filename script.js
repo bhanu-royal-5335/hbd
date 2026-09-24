@@ -31,11 +31,11 @@ const CONFIG = {
   ],
 
   welcome: {
-    greeting: "Happy Birthday, My Dearest Bangaram💖",
+    greeting: "Happy Birthday, My Dearest Cherry Bangaram💖",
     quote: '"In a universe of billions of souls, mine will forever dance only to the rhythm of yours."',
     messageP1: "Dearest Bangaram💖, today is the wondrous day the universe was blessed with your radiant light, your contagious laughter, and your pure golden heart.",
     messageP2: "Behind each of these nine magical doors lies a chapter of our fairytale—whispered memories, eternal promises, and the deepest love I hold for you.",
-    signature: "Forever Yours ❤️"
+    signature: "Forever Yours Nani"
   },
 
   gallery: [
@@ -61,8 +61,8 @@ const CONFIG = {
       id: "proposal-day",
       title: "Proposal Day",
       emoji: "💖",
-      date: "DD/MM/YYYY",
-      badgeText: "Date: DD/MM/YYYY",
+      date: "11/06/2023",
+      badgeText: "Date: 11/06/2023",
       caption: "The day our story truly began. One beautiful moment changed everything and turned a simple chapter into our forever.",
       type: "proposal"
     },
@@ -70,8 +70,8 @@ const CONFIG = {
       id: "first-kiss",
       title: "First Kiss",
       emoji: "💋",
-      date: "DD/MM/YYYY",
-      badgeText: "Date: DD/MM/YYYY",
+      date: "18/06/2023",
+      badgeText: "Date: 18/06/2023",
       caption: "A moment that time could never erase. One kiss, countless butterflies, and a memory that still makes the heart smile.",
       type: "kiss"
     },
@@ -79,8 +79,8 @@ const CONFIG = {
       id: "first-hug",
       title: "First Hug",
       emoji: "🤗",
-      date: "DD/MM/YYYY",
-      badgeText: "Date: DD/MM/YYYY",
+      date: "07/06/2023",
+      badgeText: "Date: 07/06/2023",
       caption: "The warmest place wasn't a destination—it was that first hug. A silent promise of comfort, happiness, and home.",
       type: "hug"
     },
