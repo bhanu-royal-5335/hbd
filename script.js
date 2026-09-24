@@ -50,8 +50,8 @@ const CONFIG = {
     { id: 9, img: "images/photo9.jpg", title: "Secret Gazebo", subtitle: "Under wisteria & moonbeams", desc: "Where quiet whispers and warm hugs turn midnight into our private haven." },
     { id: 10, img: "images/photo10.jpg", title: "Swan Sanctuary", subtitle: "Grace, peace & true devotion", desc: "Gliding together through life's calm waters, hand in hand, heart to heart." },
     { id: 11, img: "images/photo11.jpg", title: "Crystal Palace", subtitle: "Dancing through the years", desc: "Under glittering chandeliers, every second spent in your arms feels like a grand royal ball." },
-    { id: 12, img: "images/photo12.jpg", title: "Eternal Promise", subtitle: "A lifetime of pure magic", desc: "Today, tomorrow, and forever, I promise to cherish, protect, and love you endlessly, Bangaram💖." }
-    { id: 13, img: "image/photo13.jpg", title: "hi", subtitle: "hello" }
+    { id: 12, img: "images/photo12.jpg", title: "Eternal Promise", subtitle: "A lifetime of pure magic", desc: "Today, tomorrow, and forever, I promise to cherish, protect, and love you endlessly, Bangaram💖." },
+    { id: 13, img: "images/photo13.jpg", title: "hi", subtitle: "hello", desc: "" }
   ],
 
   timeline: [
@@ -165,7 +165,7 @@ class StorybookAudioEngine {
     if (this.visualizer) this.visualizer.classList.add("playing");
 
     // Try HTML5 Audio file first
-    const soundFile = `music/${this.currentTrack}.wav`;
+    const soundFile = `music/${this.currentTrack}.mp3`;
     if (this.bgAudio) {
       this.bgAudio.src = soundFile;
       this.bgAudio.volume = this.volume;
@@ -1029,9 +1029,33 @@ class StorybookChapterManager {
   }
 
   initEvents() {
+    // 1. Open door via the action button
     if (this.btnOpenDoor) {
-      this.btnOpenDoor.addEventListener("click", () => this.triggerDoorOpenAnimation());
+      this.btnOpenDoor.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.triggerDoorOpenAnimation();
+      });
     }
+
+    // 2. Open door by clicking directly on the door frame, leaves, knocker, or stage
+    const doorInteractiveTargets = [
+      this.doorStage,
+      this.doorLeafLeft,
+      this.doorLeafRight,
+      this.knockerLeft,
+      this.knockerRight,
+      document.getElementById("door-frame-wrapper"),
+      document.getElementById("double-doors-3d")
+    ];
+    doorInteractiveTargets.forEach((el) => {
+      if (el) {
+        el.style.cursor = "pointer";
+        el.addEventListener("click", (e) => {
+          if (e.target.closest("#btn-open-portal-action")) return;
+          this.triggerDoorOpenAnimation();
+        });
+      }
+    });
 
     if (this.btnPrevChapter) {
       this.btnPrevChapter.addEventListener("click", () => this.goToPreviousChapter());
@@ -1218,6 +1242,16 @@ class StorybookChapterManager {
         this.isDoorAnimating = false;
       }
     });
+
+    // Safety fallback: ensure chapter activates even if GSAP delay/onComplete is interrupted
+    setTimeout(() => {
+      if (this.isDoorAnimating) {
+        this.portalOverlay.classList.remove("active");
+        if (this.portalGodRays) gsap.set(this.portalGodRays, { opacity: 0, scale: 1 });
+        this.activateChapterScene(this.currentChapter);
+        this.isDoorAnimating = false;
+      }
+    }, 3200);
   }
 
   activateChapterScene(chapterNum) {
@@ -1406,11 +1440,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnBegin = document.getElementById("btn-begin-journey");
   const loaderScene = document.getElementById("scene-loader");
 
-  if (btnBegin) {
-    btnBegin.addEventListener("click", () => {
-      audio.playDoorKnock();
-      audio.playTrack(audio.currentTrack);
+  const startJourney = () => {
+    if (loaderScene && loaderScene.classList.contains("inactive")) return;
+    audio.playDoorKnock();
+    audio.playTrack(audio.currentTrack);
 
+    if (loaderScene) {
       gsap.to(loaderScene, {
         opacity: 0,
         scale: 1.05,
@@ -1420,10 +1455,25 @@ document.addEventListener("DOMContentLoaded", () => {
           loaderScene.classList.add("inactive");
           document.body.classList.remove("is-locked");
           // Present Chapter 1 Door immediately!
-          window.chapterManager.presentDoorForChapter(1);
+          if (window.chapterManager) {
+            window.chapterManager.presentDoorForChapter(1);
+          }
         }
       });
+    }
+  };
+
+  if (btnBegin) {
+    btnBegin.addEventListener("click", (e) => {
+      e.stopPropagation();
+      startJourney();
     });
+  }
+
+  const loaderContent = document.querySelector(".loader-content");
+  if (loaderContent) {
+    loaderContent.style.cursor = "pointer";
+    loaderContent.addEventListener("click", startJourney);
   }
 
   // --------------------------------------------------------------------------
@@ -1668,7 +1718,7 @@ function openLightbox(item) {
   audio.playCrystalShimmer();
   img.src = item.img;
   title.textContent = item.title;
-  desc.textContent = item.desc;
+  desc.textContent = item.desc || "";
   modal.classList.add("active");
 
   const closeModal = () => modal.classList.remove("active");
