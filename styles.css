@@ -2327,6 +2327,112 @@ body:not(.is-locked) .chapter-dock {
   }
 }
 
+/* ============================================================================
+   MILESTONE: ✨ TODAY
+   Radiant Golden Sunlight Glow & Celebratory Love Sparkles
+   ============================================================================ */
+.today-radiant-glow {
+  position: absolute;
+  inset: -25px;
+  border-radius: 35px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.35) 0%, rgba(248, 187, 208, 0.22) 40%, rgba(106, 27, 154, 0.15) 70%, transparent 85%);
+  filter: blur(30px);
+  pointer-events: none;
+  z-index: 0;
+  animation: todayGlowPulse 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes todayGlowPulse {
+  0% { transform: scale(0.95); opacity: 0.75; }
+  100% { transform: scale(1.12); opacity: 1; }
+}
+
+.floating-today-sparkles-container {
+  position: absolute;
+  inset: -25px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 4;
+}
+
+.floating-today-sparkle {
+  position: absolute;
+  font-size: 1rem;
+  filter: drop-shadow(0 0 8px #FFD700);
+  opacity: 0;
+  animation: todaySparkleAscend 5.5s ease-in-out infinite;
+}
+
+@keyframes todaySparkleAscend {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.6) rotate(0deg);
+  }
+  25% {
+    opacity: 0.95;
+  }
+  75% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) scale(1.1) rotate(45deg);
+  }
+}
+
+/* ============================================================================
+   MILESTONE: 🔮 OUR FUTURE
+   Cosmic Violet & Rose-Gold Aura, Shimmering Infinity Stars
+   ============================================================================ */
+.future-celestial-glow {
+  position: absolute;
+  inset: -28px;
+  border-radius: 35px;
+  background: radial-gradient(circle at 50% 50%, rgba(224, 64, 251, 0.32) 0%, rgba(124, 77, 255, 0.25) 35%, rgba(255, 215, 0, 0.2) 65%, transparent 85%);
+  filter: blur(32px);
+  pointer-events: none;
+  z-index: 0;
+  animation: futureAuraPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes futureAuraPulse {
+  0% { transform: scale(0.93); opacity: 0.7; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+.floating-future-stars-container {
+  position: absolute;
+  inset: -25px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 4;
+}
+
+.floating-future-star {
+  position: absolute;
+  font-size: 1.05rem;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.85)) drop-shadow(0 0 20px rgba(224, 64, 251, 0.6));
+  opacity: 0;
+  animation: futureStarDrift 6s ease-in-out infinite;
+}
+
+@keyframes futureStarDrift {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.6) rotate(-15deg);
+  }
+  25% {
+    opacity: 0.95;
+  }
+  75% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-85px) scale(1.15) rotate(25deg);
+  }
+}
+
 /* Backward compatibility */
 .timeline-wrapper {
   position: relative;

@@ -58,22 +58,13 @@ const CONFIG = {
 
   timeline: [
     {
-      id: "first-date",
-      title: "First Date",
-      emoji: "🌹",
+      id: "proposal-day",
+      title: "Proposal Day",
+      emoji: "💖",
       date: "DD/MM/YYYY",
       badgeText: "Date: DD/MM/YYYY",
-      caption: "The evening that started it all. Nervous smiles, endless laughter, and the magical moment I knew you were someone extraordinary.",
-      type: "date"
-    },
-    {
-      id: "first-hug",
-      title: "First Hug",
-      emoji: "🤗",
-      date: "DD/MM/YYYY",
-      badgeText: "Date: DD/MM/YYYY",
-      caption: "The warmest place wasn't a destination—it was that first hug. A silent promise of comfort, happiness, and home.",
-      type: "hug"
+      caption: "The day our story truly began. One beautiful moment changed everything and turned a simple chapter into our forever.",
+      type: "proposal"
     },
     {
       id: "first-kiss",
@@ -85,22 +76,29 @@ const CONFIG = {
       type: "kiss"
     },
     {
-      id: "first-i-love-you",
-      title: "First \"I Love You\"",
-      emoji: "💍",
+      id: "first-hug",
+      title: "First Hug",
+      emoji: "🤗",
       date: "DD/MM/YYYY",
       badgeText: "Date: DD/MM/YYYY",
-      caption: "Three quiet words that echoed across the universe. When my heart confessed what my soul had known from the very beginning.",
-      type: "love"
+      caption: "The warmest place wasn't a destination—it was that first hug. A silent promise of comfort, happiness, and home.",
+      type: "hug"
     },
     {
-      id: "proposal-day",
-      title: "Proposal Day",
-      emoji: "💖",
-      date: "DD/MM/YYYY",
-      badgeText: "Date: DD/MM/YYYY",
-      caption: "The day our story truly began. One beautiful moment changed everything and turned a simple chapter into our forever.",
-      type: "proposal"
+      id: "today",
+      title: "Today",
+      emoji: "✨",
+      badgeText: "Today",
+      caption: "Celebrating every heartbeat of this moment with you. Today, and every day that follows, my heart belongs completely to you, Bangaram💖.",
+      type: "today"
+    },
+    {
+      id: "our-future",
+      title: "Our Future",
+      emoji: "💍",
+      badgeText: "Future",
+      caption: "An eternity of unwritten adventures, shared dreams, and endless tomorrows. Hand in hand, our fairytale is only just beginning.",
+      type: "future"
     }
   ],
 
@@ -451,47 +449,47 @@ class StorybookAudioEngine {
     this.ensureContext();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
-    
+
     // Luxurious, emotional harmonic chords tuned for each of the 5 milestones
     const chordSets = [
-      // Milestone 0 (First Date): Gentle romantic Cmaj9 celesta arpeggio (C5, E5, G5, B5, D6)
-      [523.25, 659.25, 783.99, 987.77, 1174.66],
-      // Milestone 1 (First Hug): Warm, safe, golden Amaj7 (A4, C#5, E5, G#5, B5, C#6)
-      [440.00, 554.37, 659.25, 830.61, 987.77, 1108.73],
-      // Milestone 2 (First Kiss): Romantic, tender, fluttering Dmaj9 (D5, F#5, A5, C#6, E6)
+      // Milestone 0 (Proposal Day): Grand triumphant royal celesta arpeggio (C5, E5, G5, C6, E6, G6)
+      [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98],
+      // Milestone 1 (First Kiss): Romantic, tender, fluttering Dmaj9 (D5, F#5, A5, C#6, E6)
       [587.33, 739.99, 880.00, 1108.73, 1318.51],
-      // Milestone 3 (First "I Love You"): Ethereal crystal bell shimmer F#maj9 (F#5, A#5, C#6, F6, G#6)
-      [739.99, 932.33, 1108.73, 1396.91, 1661.22],
-      // Milestone 4 (Proposal Day): Grand triumphant royal celesta arpeggio (C5, E5, G5, C6, E6, G6)
-      [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98]
+      // Milestone 2 (First Hug): Warm, safe, golden Amaj7 (A4, C#5, E5, G#5, B5, C#6)
+      [440.00, 554.37, 659.25, 830.61, 987.77, 1108.73],
+      // Milestone 3 (Today): Joyful, radiant sunlight arpeggio Emaj9 (E5, G#5, B5, D#6, F#6)
+      [659.25, 830.61, 987.77, 1244.51, 1479.98],
+      // Milestone 4 (Our Future): Ethereal crystal bell shimmer F#maj9 (F#5, A#5, C#6, F6, G#6)
+      [739.99, 932.33, 1108.73, 1396.91, 1661.22]
     ];
-    
+
     const notes = chordSets[index % chordSets.length] || chordSets[0];
-    
+
     notes.forEach((freq, idx) => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       const filter = this.ctx.createBiquadFilter();
-      
+
       const startTime = now + idx * 0.065;
-      
+
       // Warm celesta sine tone
       osc.type = "sine";
       osc.frequency.setValueAtTime(freq, startTime);
-      
+
       // Lowpass filter for smooth romantic bell quality
       filter.type = "lowpass";
       filter.frequency.setValueAtTime(3600, startTime);
-      
+
       const noteVol = (0.2 / Math.sqrt(idx + 1)) * this.volume;
       gain.gain.setValueAtTime(0.0001, startTime);
       gain.gain.linearRampToValueAtTime(noteVol, startTime + 0.025);
       gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 1.8);
-      
+
       osc.connect(filter);
       filter.connect(gain);
       gain.connect(this.ctx.destination);
-      
+
       osc.start(startTime);
       osc.stop(startTime + 1.85);
     });
@@ -1615,20 +1613,35 @@ class JourneyTimelineManager {
           <div class="hug-warm-light" aria-hidden="true"></div>
           <div class="floating-butterflies-container" aria-hidden="true">${butterfliesHTML}</div>
         `;
-      } else if (item.type === "love") {
-        // Crystalline Diamond Glow + Floating Diamond Rings & Crystal Sparkles
-        let loveSparklesHTML = "";
-        const loveSymbols = ["💍", "💎", "✨", "💖", "✦", "💍"];
-        for (let ls = 0; ls < 8; ls++) {
-          const leftPct = 10 + (ls * 11) + (Math.random() * 5);
-          const bottomPct = 5 + (ls * 6);
-          const delay = (ls * 0.7).toFixed(2);
-          const dur = (5.2 + (ls % 3) * 1.3).toFixed(2);
-          loveSparklesHTML += `<div class="floating-love-sparkle" style="left:${leftPct}%; bottom:${bottomPct}px; animation-delay:${delay}s; animation-duration:${dur}s;">${loveSymbols[ls % loveSymbols.length]}</div>`;
+      } else if (item.type === "today") {
+        // Soft Radiant Sunlight Glow + Celebratory Love Sparkles
+        let todaySparklesHTML = "";
+        const todayIcons = ["✨", "💖", "🌸", "✦", "🌟", "✨"];
+        for (let ts = 0; ts < 8; ts++) {
+          const leftPct = 10 + (ts * 11) + (Math.random() * 5);
+          const bottomPct = 4 + (ts * 6);
+          const delay = (ts * 0.7).toFixed(2);
+          const dur = (5.2 + (ts % 3) * 1.2).toFixed(2);
+          todaySparklesHTML += `<div class="floating-today-sparkle" style="left:${leftPct}%; bottom:${bottomPct}px; animation-delay:${delay}s; animation-duration:${dur}s;">${todayIcons[ts % todayIcons.length]}</div>`;
         }
         extraDecorationHTML = `
-          <div class="love-diamond-glow" aria-hidden="true"></div>
-          <div class="floating-love-sparkles-container" aria-hidden="true">${loveSparklesHTML}</div>
+          <div class="today-radiant-glow" aria-hidden="true"></div>
+          <div class="floating-today-sparkles-container" aria-hidden="true">${todaySparklesHTML}</div>
+        `;
+      } else if (item.type === "future") {
+        // Celestial Violet Aura + Floating Future Diamond & Star Sparkles
+        let futureStarsHTML = "";
+        const futureSymbols = ["💍", "💎", "⭐", "✨", "🔮", "✦"];
+        for (let fs = 0; fs < 8; fs++) {
+          const leftPct = 10 + (fs * 11) + (Math.random() * 5);
+          const bottomPct = 5 + (fs * 6);
+          const delay = (fs * 0.75).toFixed(2);
+          const dur = (5.5 + (fs % 3) * 1.3).toFixed(2);
+          futureStarsHTML += `<div class="floating-future-star" style="left:${leftPct}%; bottom:${bottomPct}px; animation-delay:${delay}s; animation-duration:${dur}s;">${futureSymbols[fs % futureSymbols.length]}</div>`;
+        }
+        extraDecorationHTML = `
+          <div class="future-celestial-glow" aria-hidden="true"></div>
+          <div class="floating-future-stars-container" aria-hidden="true">${futureStarsHTML}</div>
         `;
       }
 
