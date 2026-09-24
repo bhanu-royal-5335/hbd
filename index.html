@@ -368,35 +368,41 @@
         <div class="chapter-advance-row text-center">
           <button class="btn-royal-luxury btn-advance-chapter" data-next="3">
             <span class="btn-shimmer"></span>
-            <span>Approach Rose Garden Gate ▸</span>
+            <span>Approach Our Journey Door ▸</span>
           </button>
         </div>
       </div>
     </article>
 
     <!-- ========================================================
-         CHAPTER 3: ROSE GARDEN GATE TIMELINE (Emerald + Rose + Ruby)
+         CHAPTER 3: OUR JOURNEY - LUXURY ROMANTIC MILESTONE TIMELINE
          ======================================================== -->
     <article class="chapter-scene" id="chapter-3" data-chapter="3">
-      <div class="chapter-backdrop backdrop-rose-garden" aria-hidden="true"></div>
+      <div class="chapter-backdrop backdrop-rose-garden backdrop-our-journey" aria-hidden="true"></div>
       <div class="container chapter-inner">
         <div class="section-heading text-center">
-          <span class="heading-badge font-cinzel">Chapter III • The Rose Garden Gate</span>
-          <h2 class="heading-title font-playfair">The Constellation of Our Love</h2>
-          <p class="heading-subtitle font-montserrat">Blooming through every season, rooted in trust and eternal devotion.</p>
+          <span class="heading-badge font-cinzel">Chapter III • Our Journey</span>
+          <h2 class="heading-title font-playfair">Our Journey</h2>
+          <p class="heading-subtitle font-montserrat">A golden path of our most cherished moments, written in starlight and eternal devotion.</p>
           <div class="gold-divider">
             <span class="line"></span>
-            <span class="gem">🌹</span>
+            <span class="gem">💖</span>
             <span class="line"></span>
           </div>
         </div>
 
-        <div class="timeline-wrapper">
-          <div class="timeline-vine" id="timeline-vine">
-            <div class="vine-glow-stem"></div>
+        <div class="journey-timeline-wrapper" id="journey-timeline-wrapper">
+          <!-- Golden Illuminated Timeline Track & Travelling Stars -->
+          <div class="journey-timeline-track" id="journey-timeline-track">
+            <div class="journey-timeline-beam" id="journey-timeline-beam"></div>
+            <div class="journey-traveling-star star-1" aria-hidden="true"><span>✦</span></div>
+            <div class="journey-traveling-star star-2" aria-hidden="true"><span>✦</span></div>
+            <div class="journey-traveling-star star-3" aria-hidden="true"><span>✦</span></div>
           </div>
-          <div class="timeline-items-list" id="timeline-items-list">
-            <!-- Timeline items rendered dynamically -->
+
+          <!-- Milestones container (rendered dynamically from CONFIG.timeline) -->
+          <div class="journey-items-list" id="journey-items-list">
+            <!-- Timeline items rendered dynamically by JourneyTimelineManager -->
           </div>
         </div>
 

@@ -21,7 +21,7 @@ const CONFIG = {
   chapters: [
     { num: 1, title: "Royal Palace Sanctuary", prompt: "Open Royal Palace Door", theme: "door-theme-1", emblem: "⚜️", badge: "Chapter 1 of 9" },
     { num: 2, title: "Crystal Palace Gallery", prompt: "Enter Crystal Palace", theme: "door-theme-2", emblem: "💎", badge: "Chapter 2 of 9" },
-    { num: 3, title: "Rose Garden Gate", prompt: "Pass Through Rose Gate", theme: "door-theme-3", emblem: "🌹", badge: "Chapter 3 of 9" },
+    { num: 3, title: "Our Journey", prompt: "Enter Our Journey", theme: "door-theme-3", emblem: "💖", badge: "Chapter 3 of 9" },
     { num: 4, title: "Lantern Night Garden", prompt: "Enter Lantern Door", theme: "door-theme-4", emblem: "🏮", badge: "Chapter 4 of 9" },
     { num: 5, title: "Heart Lock Sanctuary", prompt: "Unlock Heart Lock", theme: "door-theme-5", emblem: "💖", badge: "Chapter 5 of 9" },
     { num: 6, title: "Royal Treasure Vault", prompt: "Open Treasure Vault", theme: "door-theme-6", emblem: "👑", badge: "Chapter 6 of 9" },
@@ -57,11 +57,51 @@ const CONFIG = {
   ],
 
   timeline: [
-    { date: "Milestone I", title: "The First Spark", desc: "The exact moment our worlds collided, and my heart quietly whispered: 'This is the one.'" },
-    { date: "Milestone II", title: "First Unstoppable Laughter", desc: "When we talked until dawn, laughing until our cheeks hurt, realizing we could never be apart." },
-    { date: "Milestone III", title: "Our First Great Adventure", desc: "Stepping into the unknown together and discovering that home isn't a place—it's you, Bangaram💖." },
-    { date: "Milestone IV", title: "Through Every Season", desc: "Facing every storm and sunny day side by side, our bond growing stronger with every beat." },
-    { date: "Today & Beyond", title: "A Grand Celebration", desc: "Honoring another year of your breathtaking presence and looking forward to an eternity together." }
+    {
+      id: "first-date",
+      title: "First Date",
+      emoji: "🌹",
+      date: "DD/MM/YYYY",
+      badgeText: "Date: DD/MM/YYYY",
+      caption: "The evening that started it all. Nervous smiles, endless laughter, and the magical moment I knew you were someone extraordinary.",
+      type: "date"
+    },
+    {
+      id: "first-hug",
+      title: "First Hug",
+      emoji: "🤗",
+      date: "DD/MM/YYYY",
+      badgeText: "Date: DD/MM/YYYY",
+      caption: "The warmest place wasn't a destination—it was that first hug. A silent promise of comfort, happiness, and home.",
+      type: "hug"
+    },
+    {
+      id: "first-kiss",
+      title: "First Kiss",
+      emoji: "💋",
+      date: "DD/MM/YYYY",
+      badgeText: "Date: DD/MM/YYYY",
+      caption: "A moment that time could never erase. One kiss, countless butterflies, and a memory that still makes the heart smile.",
+      type: "kiss"
+    },
+    {
+      id: "first-i-love-you",
+      title: "First \"I Love You\"",
+      emoji: "💍",
+      date: "DD/MM/YYYY",
+      badgeText: "Date: DD/MM/YYYY",
+      caption: "Three quiet words that echoed across the universe. When my heart confessed what my soul had known from the very beginning.",
+      type: "love"
+    },
+    {
+      id: "proposal-day",
+      title: "Proposal Day",
+      emoji: "💖",
+      date: "DD/MM/YYYY",
+      badgeText: "Date: DD/MM/YYYY",
+      caption: "The day our story truly began. One beautiful moment changed everything and turned a simple chapter into our forever.",
+      type: "proposal"
+    }
   ],
 
   lanternMemories: [
@@ -404,6 +444,56 @@ class StorybookAudioEngine {
       gain.connect(this.ctx.destination);
       osc.start(now);
       osc.stop(now + 1.2);
+    });
+  }
+
+  playMilestoneChime(index = 0) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    
+    // Luxurious, emotional harmonic chords tuned for each of the 5 milestones
+    const chordSets = [
+      // Milestone 0 (First Date): Gentle romantic Cmaj9 celesta arpeggio (C5, E5, G5, B5, D6)
+      [523.25, 659.25, 783.99, 987.77, 1174.66],
+      // Milestone 1 (First Hug): Warm, safe, golden Amaj7 (A4, C#5, E5, G#5, B5, C#6)
+      [440.00, 554.37, 659.25, 830.61, 987.77, 1108.73],
+      // Milestone 2 (First Kiss): Romantic, tender, fluttering Dmaj9 (D5, F#5, A5, C#6, E6)
+      [587.33, 739.99, 880.00, 1108.73, 1318.51],
+      // Milestone 3 (First "I Love You"): Ethereal crystal bell shimmer F#maj9 (F#5, A#5, C#6, F6, G#6)
+      [739.99, 932.33, 1108.73, 1396.91, 1661.22],
+      // Milestone 4 (Proposal Day): Grand triumphant royal celesta arpeggio (C5, E5, G5, C6, E6, G6)
+      [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98]
+    ];
+    
+    const notes = chordSets[index % chordSets.length] || chordSets[0];
+    
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+      
+      const startTime = now + idx * 0.065;
+      
+      // Warm celesta sine tone
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, startTime);
+      
+      // Lowpass filter for smooth romantic bell quality
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(3600, startTime);
+      
+      const noteVol = (0.2 / Math.sqrt(idx + 1)) * this.volume;
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.linearRampToValueAtTime(noteVol, startTime + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 1.8);
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + 1.85);
     });
   }
 
@@ -1193,7 +1283,7 @@ class StorybookChapterManager {
       // Play theme specific chime
       const themeSoundMap = {
         2: () => audio.playCrystalShimmer(),
-        3: () => audio.playButterflyFlutter(),
+        3: () => (audio.playMilestoneChime ? audio.playMilestoneChime(0) : audio.playButterflyFlutter()),
         4: () => audio.playWindChimes(),
         5: () => audio.playHeartChime(),
         6: () => audio.playGiftSparkle(),
@@ -1265,19 +1355,24 @@ class StorybookChapterManager {
       targetScene.classList.add("active");
       targetScene.scrollIntoView({ behavior: "smooth" });
 
-      // Ultra-smooth entrance animation for the chapter's main card
-      const mainCard = targetScene.querySelector(".glass-card, .luxury-ornate-card");
-      if (mainCard) {
-        gsap.fromTo(mainCard,
-          { y: 35, opacity: 0, scale: 0.96 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "power2.out" }
-        );
+      // Ultra-smooth entrance animation for the chapter's main card (except chapter 3 which has its own timeline orchestrator)
+      if (chapterNum !== 3) {
+        const mainCard = targetScene.querySelector(".glass-card, .luxury-ornate-card");
+        if (mainCard) {
+          gsap.fromTo(mainCard,
+            { y: 35, opacity: 0, scale: 0.96 },
+            { y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "power2.out" }
+          );
+        }
       }
     }
 
     this.updateDockUI();
 
     // Trigger chapter-specific entrance events
+    if (chapterNum === 3 && window.journeyTimelineManager) {
+      setTimeout(() => window.journeyTimelineManager.onEnterChapter(), 180);
+    }
     if (chapterNum === 7 && window.memoryHeartInstance) {
       setTimeout(() => window.memoryHeartInstance.assemble(), 600);
     }
@@ -1415,6 +1510,367 @@ class MemoryHeartManager {
 }
 
 // ============================================================================
+// 7.5. OUR JOURNEY - LUXURY ROMANTIC MILESTONE TIMELINE ENGINE
+// ============================================================================
+class JourneyTimelineManager {
+  constructor() {
+    this.container = document.getElementById("journey-items-list") || document.getElementById("timeline-items-list");
+    this.wrapper = document.getElementById("journey-timeline-wrapper");
+    this.beam = document.getElementById("journey-timeline-beam");
+    this.milestoneItems = [];
+    this.unlockedMilestones = new Set();
+    this.isEntranceAnimated = false;
+
+    this.init();
+  }
+
+  init() {
+    this.render();
+    this.initScrollListener();
+  }
+
+  render() {
+    if (!this.container) {
+      this.container = document.getElementById("journey-items-list") || document.getElementById("timeline-items-list");
+    }
+    if (!this.container) return;
+    this.container.innerHTML = "";
+    this.milestoneItems = [];
+
+    CONFIG.timeline.forEach((item, idx) => {
+      const isLeft = idx % 2 === 0;
+      const itemEl = document.createElement("div");
+      itemEl.className = `journey-milestone-item ${isLeft ? "item-left" : "item-right"} type-${item.type || "default"}`;
+      itemEl.dataset.milestoneIndex = idx;
+      itemEl.dataset.milestoneId = item.id;
+
+      // Build specific milestone decoration content
+      let extraDecorationHTML = "";
+      if (item.type === "date") {
+        // Floating Rose Petals & Starlight Embers + Candlelight Amber Glow
+        let embersHTML = "";
+        const emberIcons = ["✨", "✦", "🌹", "⋆", "✨", "🌸"];
+        for (let eb = 0; eb < 7; eb++) {
+          const leftPct = 10 + (eb * 12) + (Math.random() * 6);
+          const bottomPct = 4 + (eb * 7);
+          const delay = (eb * 0.75).toFixed(2);
+          const dur = (5.5 + (eb % 3) * 1.2).toFixed(2);
+          embersHTML += `<div class="floating-date-ember" style="left:${leftPct}%; bottom:${bottomPct}px; animation-delay:${delay}s; animation-duration:${dur}s;">${emberIcons[eb % emberIcons.length]}</div>`;
+        }
+        extraDecorationHTML = `
+          <div class="date-candle-glow" aria-hidden="true"></div>
+          <div class="floating-date-embers-container" aria-hidden="true">${embersHTML}</div>
+        `;
+      } else if (item.type === "proposal") {
+        // Floating Rose Petals + Soft Golden Glow + Heart Pulse
+        let petalsHTML = "";
+        for (let p = 0; p < 9; p++) {
+          const leftPct = 8 + (p * 10) + (Math.random() * 6);
+          const topPct = (p * 8) + (Math.random() * 8);
+          const delay = (p * 0.65).toFixed(2);
+          const dur = (5.2 + (p % 3) * 1.4).toFixed(2);
+          petalsHTML += `<div class="floating-rose-petal" style="left:${leftPct}%; top:${topPct}%; animation-delay:${delay}s; animation-duration:${dur}s;"></div>`;
+        }
+        extraDecorationHTML = `
+          <div class="proposal-soft-glow" aria-hidden="true"></div>
+          <div class="floating-petals-container" aria-hidden="true">${petalsHTML}</div>
+        `;
+      } else if (item.type === "kiss") {
+        // Floating Hearts + Sparkle Burst + Gentle Camera Zoom
+        let heartsHTML = "";
+        const heartIcons = ["💖", "💕", "💋", "✨", "💗"];
+        for (let h = 0; h < 8; h++) {
+          const leftPct = 10 + (h * 11) + (Math.random() * 5);
+          const bottomPct = 4 + (h * 6);
+          const delay = (h * 0.7).toFixed(2);
+          const dur = (4.8 + (h % 3) * 1.1).toFixed(2);
+          const heartChar = heartIcons[h % heartIcons.length];
+          heartsHTML += `<div class="floating-heart" style="left:${leftPct}%; bottom:${bottomPct}px; animation-delay:${delay}s; animation-duration:${dur}s;">${heartChar}</div>`;
+        }
+        // Radial burst particles for hover/unlock
+        let burstHTML = "";
+        for (let b = 0; b < 12; b++) {
+          const angle = (b / 12) * Math.PI * 2;
+          const dist = 55 + Math.random() * 35;
+          const tx = Math.cos(angle) * dist;
+          const ty = Math.sin(angle) * dist;
+          burstHTML += `<div class="sparkle-burst-particle" style="left:50%; top:50%; --tx:${tx}px; --ty:${ty}px;"></div>`;
+        }
+        extraDecorationHTML = `
+          <div class="floating-hearts-container" aria-hidden="true">${heartsHTML}</div>
+          <div class="sparkle-burst-container" aria-hidden="true">${burstHTML}</div>
+        `;
+      } else if (item.type === "hug") {
+        // Soft Light Expands + Floating Butterflies + Warm Golden Aura
+        let butterfliesHTML = "";
+        const bIcons = ["🦋", "✨", "🦋", "🌸"];
+        for (let bf = 0; bf < 5; bf++) {
+          const leftPct = 12 + (bf * 18);
+          const topPct = 12 + (bf * 14);
+          const delay = (bf * 1.1).toFixed(2);
+          const dur = (6.2 + (bf % 2) * 1.8).toFixed(2);
+          butterfliesHTML += `<div class="floating-butterfly" style="left:${leftPct}%; top:${topPct}%; animation-delay:${delay}s; animation-duration:${dur}s;">${bIcons[bf % bIcons.length]}</div>`;
+        }
+        extraDecorationHTML = `
+          <div class="hug-warm-light" aria-hidden="true"></div>
+          <div class="floating-butterflies-container" aria-hidden="true">${butterfliesHTML}</div>
+        `;
+      } else if (item.type === "love") {
+        // Crystalline Diamond Glow + Floating Diamond Rings & Crystal Sparkles
+        let loveSparklesHTML = "";
+        const loveSymbols = ["💍", "💎", "✨", "💖", "✦", "💍"];
+        for (let ls = 0; ls < 8; ls++) {
+          const leftPct = 10 + (ls * 11) + (Math.random() * 5);
+          const bottomPct = 5 + (ls * 6);
+          const delay = (ls * 0.7).toFixed(2);
+          const dur = (5.2 + (ls % 3) * 1.3).toFixed(2);
+          loveSparklesHTML += `<div class="floating-love-sparkle" style="left:${leftPct}%; bottom:${bottomPct}px; animation-delay:${delay}s; animation-duration:${dur}s;">${loveSymbols[ls % loveSymbols.length]}</div>`;
+        }
+        extraDecorationHTML = `
+          <div class="love-diamond-glow" aria-hidden="true"></div>
+          <div class="floating-love-sparkles-container" aria-hidden="true">${loveSparklesHTML}</div>
+        `;
+      }
+
+      // Floating sparkles field around each card
+      let sparklesHTML = "";
+      const sparkleSymbols = ["✦", "✧", "✨", "⋆", "✦", "✧"];
+      for (let s = 0; s < 6; s++) {
+        const sLeft = (s * 18) + (Math.random() * 6);
+        const sTop = (s % 2 === 0 ? -12 : 94) + (Math.random() * 6);
+        const sDelay = (s * 0.55).toFixed(2);
+        sparklesHTML += `<div class="journey-sparkle" style="left:${sLeft}%; top:${sTop}%; animation-delay:${sDelay}s;">${sparkleSymbols[s]}</div>`;
+      }
+
+      itemEl.innerHTML = `
+        <!-- Illuminated Golden Node -->
+        <div class="journey-node" title="Milestone: ${item.title}">
+          <div class="journey-node-pulse" aria-hidden="true"></div>
+          <span class="journey-node-icon">${item.emoji || "✦"}</span>
+        </div>
+
+        <!-- Horizontal Golden Filament Connector -->
+        <div class="journey-connector" aria-hidden="true"></div>
+
+        <!-- Glassmorphism Card with soft glow -->
+        <div class="journey-card ${item.type === 'kiss' ? 'kiss-card-wrapper' : ''}">
+          <div class="journey-card-shimmer" aria-hidden="true"></div>
+          <span class="journey-corner tl" aria-hidden="true"></span>
+          <span class="journey-corner tr" aria-hidden="true"></span>
+          <span class="journey-corner bl" aria-hidden="true"></span>
+          <span class="journey-corner br" aria-hidden="true"></span>
+
+          <!-- Milestone Special Atmosphere & Particle Layers -->
+          ${extraDecorationHTML}
+
+          <!-- Floating Sparkles -->
+          <div class="journey-sparkles-field" aria-hidden="true">
+            ${sparklesHTML}
+          </div>
+
+          <!-- Date Badge -->
+          <div class="journey-date-badge font-cinzel">
+            <span class="badge-sparkle">✦</span>
+            <span>${item.badgeText || `Date: ${item.date}`}</span>
+          </div>
+
+          <!-- Title Header with Pulsing Emoji -->
+          <div class="journey-card-header">
+            <h3 class="journey-title font-playfair">
+              <span class="journey-emoji-badge">${item.emoji}</span>
+              <span>${item.title}</span>
+            </h3>
+          </div>
+
+          <!-- Romantic Caption -->
+          <p class="journey-caption font-montserrat">"${item.caption}"</p>
+        </div>
+      `;
+
+      // Interactive Click/Tap: trigger soft chime, heartbeat pulse, and sparkle burst
+      const card = itemEl.querySelector(".journey-card");
+      const node = itemEl.querySelector(".journey-node");
+
+      const handleMilestoneInteraction = () => {
+        if (window.audio && window.audio.playMilestoneChime) {
+          window.audio.playMilestoneChime(idx);
+        }
+        // Micro heartbeat bounce
+        gsap.to(card, {
+          scale: 1.05,
+          duration: 0.18,
+          yoyo: true,
+          repeat: 1,
+          ease: "power2.out"
+        });
+
+        // Trigger sparkle burst animation on kiss card
+        const burstContainer = card.querySelector(".sparkle-burst-container");
+        if (burstContainer) {
+          burstContainer.classList.remove("kiss-burst-active");
+          void burstContainer.offsetWidth; // re-flow
+          burstContainer.classList.add("kiss-burst-active");
+        }
+      };
+
+      if (card) card.addEventListener("click", handleMilestoneInteraction);
+      if (node) node.addEventListener("click", handleMilestoneInteraction);
+
+      this.container.appendChild(itemEl);
+      this.milestoneItems.push(itemEl);
+    });
+  }
+
+  onEnterChapter() {
+    this.animateEntrance();
+  }
+
+  animateEntrance() {
+    if (!this.wrapper) this.wrapper = document.getElementById("journey-timeline-wrapper");
+    if (!this.beam) this.beam = document.getElementById("journey-timeline-beam");
+
+    // 1. Illuminate and draw down the golden timeline beam from top to bottom
+    if (this.beam) {
+      gsap.killTweensOf(this.beam);
+      gsap.fromTo(this.beam,
+        { height: "0%" },
+        { height: "100%", duration: 1.8, ease: "power2.inOut" }
+      );
+    }
+
+    // 2. Animate nodes, connectors, and cards sequentially with GSAP & gentle heartbeat
+    this.milestoneItems.forEach((itemEl, idx) => {
+      const card = itemEl.querySelector(".journey-card");
+      const node = itemEl.querySelector(".journey-node");
+      const connector = itemEl.querySelector(".journey-connector");
+      const isLeft = itemEl.classList.contains("item-left");
+      const startX = isLeft ? -50 : 50;
+
+      const delay = 0.35 + idx * 0.42;
+
+      // Animate golden node
+      if (node) {
+        gsap.fromTo(node,
+          { scale: 0, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.55,
+            delay: delay,
+            ease: "back.out(2)"
+          }
+        );
+      }
+
+      // Animate connector
+      if (connector) {
+        gsap.fromTo(connector,
+          { scaleX: 0, transformOrigin: isLeft ? "right center" : "left center" },
+          { scaleX: 1, duration: 0.4, delay: delay + 0.15, ease: "power2.out" }
+        );
+      }
+
+      // Animate Card with Heartbeat on reveal
+      if (card) {
+        gsap.fromTo(card,
+          { opacity: 0, x: startX, y: 30, scale: 0.93 },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: delay + 0.22,
+            ease: "power2.out",
+            onStart: () => {
+              // Play soft milestone chime sound upon unlocking
+              if (window.audio && window.audio.playMilestoneChime) {
+                window.audio.playMilestoneChime(idx);
+              }
+            },
+            onComplete: () => {
+              // Gentle heartbeat animation
+              gsap.to(card, {
+                scale: 1.045,
+                duration: 0.18,
+                yoyo: true,
+                repeat: 1,
+                ease: "power1.inOut",
+                onComplete: () => {
+                  gsap.to(card, {
+                    scale: 1.025,
+                    duration: 0.14,
+                    yoyo: true,
+                    repeat: 1,
+                    ease: "power1.inOut"
+                  });
+                }
+              });
+            }
+          }
+        );
+      }
+    });
+
+    this.isEntranceAnimated = true;
+  }
+
+  initScrollListener() {
+    // Dynamic golden line fill & milestone unlock during scroll
+    const updateScrollProgress = () => {
+      const chapter3 = document.getElementById("chapter-3");
+      if (!chapter3 || !chapter3.classList.contains("active")) return;
+      if (!this.wrapper) this.wrapper = document.getElementById("journey-timeline-wrapper");
+      if (!this.beam) this.beam = document.getElementById("journey-timeline-beam");
+      if (!this.wrapper || !this.beam) return;
+
+      const rect = this.wrapper.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Calculate how far the timeline wrapper has scrolled into view
+      const topDistance = windowHeight - rect.top;
+      const totalScrollable = windowHeight + rect.height;
+      const progress = Math.min(Math.max(topDistance / totalScrollable, 0), 1);
+
+      // Interpolate beam height smoothly based on scroll
+      const fillPercent = Math.min(Math.max((progress * 130) - 10, 0), 100);
+      if (this.isEntranceAnimated) {
+        this.beam.style.height = `${Math.max(fillPercent, 35)}%`;
+      }
+
+      // Check milestones in view to unlock with chime
+      this.milestoneItems.forEach((itemEl, idx) => {
+        const itemRect = itemEl.getBoundingClientRect();
+        if (itemRect.top < windowHeight * 0.85 && !this.unlockedMilestones.has(idx)) {
+          this.unlockedMilestones.add(idx);
+          if (window.audio && window.audio.playMilestoneChime) {
+            window.audio.playMilestoneChime(idx);
+          }
+          const card = itemEl.querySelector(".journey-card");
+          if (card) {
+            gsap.to(card, {
+              scale: 1.035,
+              duration: 0.22,
+              yoyo: true,
+              repeat: 1,
+              ease: "power1.inOut"
+            });
+          }
+        }
+      });
+    };
+
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    // Also observe class changes on chapter-3
+    const observer = new MutationObserver(() => updateScrollProgress());
+    const chapter3 = document.getElementById("chapter-3");
+    if (chapter3) {
+      observer.observe(chapter3, { attributes: true, attributeFilter: ["class"] });
+    }
+  }
+}
+
+// ============================================================================
 // 8. DATA BUILDERS & DOM READY
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
@@ -1426,6 +1882,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Storybook Chapter Manager
   window.chapterManager = new StorybookChapterManager();
   window.memoryHeartInstance = new MemoryHeartManager(heartCanvas);
+  window.journeyTimelineManager = new JourneyTimelineManager();
 
   // Populate dynamic UI
   populateConfigTexts();
@@ -1597,23 +2054,9 @@ function renderPolaroidGallery() {
 }
 
 function renderTimelineMilestones() {
-  const list = document.getElementById("timeline-items-list");
-  if (!list) return;
-  list.innerHTML = "";
-  CONFIG.timeline.forEach((item, idx) => {
-    const isLeft = idx % 2 === 0;
-    const div = document.createElement("div");
-    div.className = `timeline-item ${isLeft ? "item-left" : "item-right"}`;
-    div.innerHTML = `
-      <div class="timeline-node"></div>
-      <div class="glass-card timeline-card">
-        <span class="timeline-date-badge font-cinzel">${item.date}</span>
-        <h3 class="timeline-title font-playfair">${item.title}</h3>
-        <p class="timeline-description font-montserrat">${item.desc}</p>
-      </div>
-    `;
-    list.appendChild(div);
-  });
+  if (window.journeyTimelineManager) {
+    window.journeyTimelineManager.render();
+  }
 }
 
 function renderLanternMemories() {
