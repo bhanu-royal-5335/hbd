@@ -51,7 +51,9 @@ const CONFIG = {
     { id: 10, img: "images/photo10.jpg", title: "Swan Sanctuary", subtitle: "Grace, peace & true devotion", desc: "Gliding together through life's calm waters, hand in hand, heart to heart." },
     { id: 11, img: "images/photo11.jpg", title: "Crystal Palace", subtitle: "Dancing through the years", desc: "Under glittering chandeliers, every second spent in your arms feels like a grand royal ball." },
     { id: 12, img: "images/photo12.jpg", title: "Eternal Promise", subtitle: "A lifetime of pure magic", desc: "Today, tomorrow, and forever, I promise to cherish, protect, and love you endlessly, Bangaram💖." },
-    { id: 13, img: "images/photo13.jpg", title: "hi", subtitle: "hello", desc: "" }
+    { id: 13, img: "images/photo13.jpg", title: "Sweetest Memories", subtitle: "Treasured in my heart", desc: "Every smile you give me is a precious memory I keep close to my heart forever, Bangaram💖." },
+    { id: 14, img: "images/photo14.jpg", title: "Midnight Starlight", subtitle: "Our magical bond", desc: "Underneath every starry sky, you are the brightest shining light in my world, Bangaram💖." },
+    { id: 15, img: "images/photo15.jpg", title: "Forever & Always", subtitle: "My eternal love", desc: "With you, every single chapter of life is filled with pure happiness, joy, and endless love, Bangaram💖." }
   ],
 
   timeline: [
